@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, {useState, useRef} from "react";
 import {
     StyleSheet,
     Text,
@@ -11,16 +11,18 @@ import Task from "./Task";
 
 let statusAPI;
 
-function Init (api) {statusAPI = api;}
+function Init(api) {
+    statusAPI = api;
+}
 
-function ExtensionView () {
+function ExtensionView() {
     const [value, setValue] = useState("");
     const [todos, setTodos] = useState([]);
     const inp = useRef(null);
 
     const handleAddTodo = () => {
         if (value.length > 0) {
-            setTodos([...todos, { text: value, key: Date.now(), checked: false }]);
+            setTodos([...todos, {text: value, key: Date.now(), checked: false}]);
             setValue("");
         }
         inp.current.clear();
@@ -51,51 +53,67 @@ function ExtensionView () {
     };
 
     return (
-        <View style={styles.container}>
-            <View style={styles.textInputContainer}>
-                <TextInput
-                    style={styles.textInput}
-                    autoFocus={true}
-                    multiline={false}
-                    onChangeText={(value) => setValue(value)}
-                    onSubmitEditing={(event) => handleAddTodo()}
-                    blurOnSubmit={false}
-                    placeholder={"Todo"}
-                    placeholderTextColor="gray"
-                    ref={inp}
-                />
-                <TouchableOpacity onPress={() => handleAddTodo()}>
-                    <View style={{ marginLeft: 10, paddingHorizontal: 10}}>
-                        <Text style={{ fontSize: 30, color: "#4360df" }}>+</Text>
-                    </View>
+        <View style={{flex: 1}}>
+            <TouchableOpacity onPress={() => {
+                statusAPI.close()
+            }}>
+                <View style={{
+                    height: 26,
+                    width: 26,
+                    marginTop: 10,
+                    marginLeft: 10,
+                    alignItems: "center",
+                    justifyContent: "center"
+                }}>
+                    <Text style={{fontWeight: "bold"}}>X</Text>
+                </View>
+            </TouchableOpacity>
+            <View style={styles.container}>
+                <View style={styles.textInputContainer}>
+                    <TextInput
+                        style={styles.textInput}
+                        autoFocus={true}
+                        multiline={false}
+                        onChangeText={(value) => setValue(value)}
+                        onSubmitEditing={(event) => handleAddTodo()}
+                        blurOnSubmit={false}
+                        placeholder={"Todo"}
+                        placeholderTextColor="gray"
+                        ref={inp}
+                    />
+                    <TouchableOpacity onPress={() => handleAddTodo()}>
+                        <View style={{marginLeft: 10, paddingHorizontal: 10}}>
+                            <Text style={{fontSize: 30, color: "#4360df"}}>+</Text>
+                        </View>
+                    </TouchableOpacity>
+                </View>
+                <ScrollView style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
+                    {todos.map((task) => (
+                        <Task
+                            text={task.text}
+                            key={task.key}
+                            checked={task.checked}
+                            showDel={true}
+                            setChecked={() => handleChecked(task.key)}
+                            delete={() => handleDeleteTodo(task.key)}
+                        />
+                    ))}
+                </ScrollView>
+                <TouchableOpacity style={{alignSelf: "center"}} onPress={() => handleSend()}>
+                    <Text style={{fontSize: 24, marginTop: 20, color: "#4360df"}}>Send</Text>
                 </TouchableOpacity>
             </View>
-            <ScrollView style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
-                {todos.map((task) => (
-                    <Task
-                        text={task.text}
-                        key={task.key}
-                        checked={task.checked}
-                        showDel={true}
-                        setChecked={() => handleChecked(task.key)}
-                        delete={() => handleDeleteTodo(task.key)}
-                    />
-                ))}
-            </ScrollView>
-            <TouchableOpacity style={{alignSelf: "center"}} onPress={() => handleSend()}>
-                <Text style={{ fontSize: 24, marginTop: 20, color: "#4360df" }}>Send</Text>
-            </TouchableOpacity>
         </View>
     );
 };
 
-function MessageView (props) {
+function MessageView(props) {
     const [todos, setTodos] = useState(props.params);
 
     const handleChecked = (id) => {
         setTodos(
             todos.map((todo) => {
-                console.log("todo.key " +  todo.key);
+                console.log("todo.key " + todo.key);
                 if (todo.key === id) todo.checked = !todo.checked;
                 return todo;
             })
@@ -103,10 +121,10 @@ function MessageView (props) {
     };
 
     return (
-        <View style={{padding: 20, backgroundColor:  (props.outgoing) ? "#4360df" : "", borderRadius: 20}}
+        <View style={{padding: 20, backgroundColor: (props.outgoing) ? "#4360df" : "", borderRadius: 20}}
               key={props.id}>
             <Text style={{color: (props.outgoing) ? "white" : "black", fontWeight: "bold"}}>Todo</Text>
-            <View style={{marginTop: 10}} >
+            <View style={{marginTop: 10}}>
                 {todos.map((task) => (
                     <TouchableOpacity onPress={() => handleChecked(task.key)}>
                         <View style={{flexDirection: "row", marginBottom: 15}} key={task.key}>
@@ -121,10 +139,15 @@ function MessageView (props) {
                                     justifyContent: "center"
                                 }}
                             >
-                                <Text style={{color: (props.outgoing) ? "white" : "black"}}>{task.checked ? "✓" : ""}</Text>
+                                <Text
+                                    style={{color: (props.outgoing) ? "white" : "black"}}>{task.checked ? "✓" : ""}</Text>
                             </View>
 
-                            <Text style={{width: 200, marginLeft: 10, color: (props.outgoing) ? "white" : "black"}}>{task.text}</Text>
+                            <Text style={{
+                                width: 200,
+                                marginLeft: 10,
+                                color: (props.outgoing) ? "white" : "black"
+                            }}>{task.text}</Text>
                         </View>
                     </TouchableOpacity>
                 ))}
