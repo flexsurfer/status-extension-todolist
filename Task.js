@@ -14,7 +14,7 @@ const Task = (props) => (
                     justifyContent: "center"
                 }}
             >
-                <Text>{props.checked ? "V" : ""}</Text>
+                <Text>{props.checked ? "✓" : ""}</Text>
             </View>
         </TouchableOpacity>}
 

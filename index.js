@@ -121,7 +121,7 @@ function MessageView (props) {
                                     justifyContent: "center"
                                 }}
                             >
-                                <Text style={{color: (props.outgoing) ? "white" : "black"}}>{task.checked ? "V" : ""}</Text>
+                                <Text style={{color: (props.outgoing) ? "white" : "black"}}>{task.checked ? "✓" : ""}</Text>
                             </View>
 
                             <Text style={{width: 200, marginLeft: 10, color: (props.outgoing) ? "white" : "black"}}>{task.text}</Text>
